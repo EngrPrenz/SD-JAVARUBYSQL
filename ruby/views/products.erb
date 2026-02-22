@@ -1,15 +1,15 @@
 <h2>Products</h2>
 
-<form method="get" action="/products" class="box" style="width:800px;">
-  <label>Search by name</label>
-  <input name="q" value="<%= @q %>" placeholder="type product name..." />
+<form method="get" action="/products" class="search-bar">
+  <div class="field">
+    <label>Search by name</label>
+    <input name="q" value="<%= @q %>" placeholder="type product name..." />
+  </div>
   <button type="submit">Search</button>
   <a href="/products">Clear</a>
 </form>
 
-<p>
-  <a href="/products/new">+ Add New Product</a>
-</p>
+<a href="/products/new" class="add-link">+ Add New Product</a>
 
 <table>
   <tr>
@@ -27,7 +27,7 @@
       <td><%= p[:qty] %></td>
       <td>
         <a href="/products/<%= p[:id] %>/edit">Edit</a>
-        |
+        &nbsp;
         <form class="inline" method="post" action="/products/<%= p[:id] %>/delete" onsubmit="return confirm('Delete this product?')">
           <button type="submit">Delete</button>
         </form>

@@ -1,6 +1,6 @@
 <h2>Edit Product</h2>
 
-<div class="box">
+<div class="form-box">
   <% if @error %>
     <div class="error"><%= @error %></div>
   <% end %>
@@ -15,7 +15,9 @@
     <label>Qty</label>
     <input name="qty" type="number" value="<%= @product[:qty] %>" />
 
-    <button type="submit">Update</button>
-    <a href="/products">Cancel</a>
+    <div class="form-actions">
+      <button type="submit">Update</button>
+      <a href="/products">Cancel</a>
+    </div>
   </form>
 </div>

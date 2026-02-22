@@ -3,14 +3,279 @@
 <head>
   <meta charset="utf-8" />
   <title>Ruby SQL GUI</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Serif+Display&display=swap" rel="stylesheet">
   <style>
-    body { font-family: Arial; margin: 30px; }
-    nav a { margin-right: 10px; }
-    hr { margin: 16px 0; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #0a0a0a;
+      --white: #f5f5f0;
+      --mid: #888;
+      --border: #222;
+      --font-display: 'DM Serif Display', Georgia, serif;
+      --font-mono: 'DM Mono', 'Courier New', monospace;
+    }
+
+    html { font-size: 18px; }
+
+    body {
+      background: var(--white);
+      color: var(--black);
+      font-family: var(--font-mono);
+      min-height: 100vh;
+      padding: 0;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      border-bottom: 2px solid var(--black);
+      padding: 0 48px;
+      height: 64px;
+    }
+
+    nav .brand {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      letter-spacing: -0.02em;
+      margin-right: auto;
+      color: var(--black);
+      text-decoration: none;
+    }
+
+    nav a {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--black);
+      text-decoration: none;
+      padding: 0 20px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      border-left: 1px solid var(--border);
+      transition: background 0.15s, color 0.15s;
+    }
+
+    nav a:hover {
+      background: var(--black);
+      color: var(--white);
+    }
+
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 64px 48px;
+    }
+
+    h2 {
+      font-family: var(--font-display);
+      font-size: 2.8rem;
+      font-weight: 400;
+      letter-spacing: -0.03em;
+      margin-bottom: 40px;
+      line-height: 1;
+    }
+
+    label {
+      display: block;
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--mid);
+      margin-bottom: 6px;
+      margin-top: 20px;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="number"],
+    input:not([type]) {
+      display: block;
+      width: 100%;
+      padding: 14px 16px;
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      color: var(--black);
+      background: transparent;
+      border: 2px solid var(--black);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    input:focus {
+      border-color: var(--black);
+      background: #fff;
+    }
+
+    button[type="submit"], button {
+      display: inline-block;
+      margin-top: 28px;
+      padding: 14px 32px;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--white);
+      background: var(--black);
+      border: 2px solid var(--black);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    button[type="submit"]:hover, button:hover {
+      background: transparent;
+      color: var(--black);
+    }
+
+    a {
+      color: var(--black);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    a:hover { text-decoration: none; }
+
+    .error {
+      border-left: 4px solid var(--black);
+      padding: 12px 16px;
+      font-size: 0.95rem;
+      margin-bottom: 20px;
+      background: #eee;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 32px;
+      font-size: 1rem;
+    }
+
+    th {
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--mid);
+      text-align: left;
+      padding: 10px 16px;
+      border-bottom: 2px solid var(--black);
+    }
+
+    td {
+      padding: 16px 16px;
+      border-bottom: 1px solid #ddd;
+      vertical-align: middle;
+    }
+
+    tr:hover td { background: #f0f0eb; }
+
+    td form.inline {
+      display: inline;
+    }
+
+    td form.inline button {
+      margin: 0;
+      padding: 6px 14px;
+      font-size: 0.75rem;
+      background: transparent;
+      color: var(--black);
+      border: 1px solid #bbb;
+    }
+
+    td form.inline button:hover {
+      background: var(--black);
+      color: var(--white);
+      border-color: var(--black);
+    }
+
+    td a {
+      font-size: 0.85rem;
+      letter-spacing: 0.04em;
+    }
+
+    .search-bar {
+      display: flex;
+      align-items: flex-end;
+      gap: 12px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+
+    .search-bar .field {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .search-bar label { margin-top: 0; }
+
+    .search-bar input {
+      margin: 0;
+    }
+
+    .search-bar button {
+      margin-top: 0;
+      height: 50px;
+      padding: 0 24px;
+    }
+
+    .search-bar a {
+      height: 50px;
+      display: flex;
+      align-items: center;
+      font-size: 0.8rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--mid);
+    }
+
+    .add-link {
+      display: inline-block;
+      margin-bottom: 24px;
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-bottom: 2px solid var(--black);
+      padding-bottom: 2px;
+    }
+
+    .form-box {
+      max-width: 480px;
+    }
+
+    .form-actions {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin-top: 32px;
+    }
+
+    .form-actions button { margin-top: 0; }
+
+    .form-actions a {
+      font-size: 0.8rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--mid);
+      text-decoration: none;
+    }
+
+    .form-actions a:hover { color: var(--black); }
+
+    .setup-note {
+      margin-top: 32px;
+      font-size: 0.85rem;
+      color: var(--mid);
+      border-top: 1px solid #ddd;
+      padding-top: 20px;
+    }
   </style>
 </head>
 <body>
   <nav>
+    <a href="/" class="brand">SQL GUI</a>
     <% if session[:user_id] %>
       <a href="/products">Products</a>
       <a href="/logout">Logout</a>
@@ -18,7 +283,8 @@
       <a href="/login">Login</a>
     <% end %>
   </nav>
-  <hr />
-  <%= yield %>
+  <main>
+    <%= yield %>
+  </main>
 </body>
 </html>
